@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tell Me Planner - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    
+    <div class="app-container">
+        <header class="app-header">
+            <div class="user-welcome">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="assets/logo.jpg" style="width: 50px; border-radius: 50%;">
+                    <div>
+                        <h1 id="greeting">Hello!</h1>
+                        <p style="color: var(--text-dim); font-size: 0.9rem;">Foco total hoje.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div class="xp-wrapper">
+                    <div class="lvl-circle">LV<span id="lvlNum">1</span></div>
+                    <div class="xp-track"><div class="xp-fill" id="xpBar"></div></div>
+                    <span style="font-size: 0.8rem; font-weight: bold; color: var(--gold);" id="xpText">0 XP</span>
+                </div>
+                <button onclick="logout()" class="logout-btn">Sair</button>
+            </div>
+        </header>
+
+        <div class="grid-dashboard">
+            
+            <div class="widget">
+                <div class="widget-title"><i class="ph ph-calendar-check" style="font-size: 1.2rem; color: var(--magenta);"></i> Frequência</div>
+                <div class="week-row">
+                    <div class="day-box" onclick="toggleDay(0)"><div class="check-circle"></div><span>D</span></div>
+                    <div class="day-box" onclick="toggleDay(1)"><div class="check-circle"></div><span>S</span></div>
+                    <div class="day-box" onclick="toggleDay(2)"><div class="check-circle"></div><span>T</span></div>
+                    <div class="day-box" onclick="toggleDay(3)"><div class="check-circle"></div><span>Q</span></div>
+                    <div class="day-box" onclick="toggleDay(4)"><div class="check-circle"></div><span>Q</span></div>
+                    <div class="day-box" onclick="toggleDay(5)"><div class="check-circle"></div><span>S</span></div>
+                    <div class="day-box" onclick="toggleDay(6)"><div class="check-circle"></div><span>S</span></div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <div class="widget-title"><i class="ph ph-clock" style="font-size: 1.2rem; color: var(--blue);"></i> Pomodoro</div>
+                <div class="timer-big" id="timerDisplay">25:00</div>
+                <div class="timer-actions">
+                    <button class="btn-control btn-start" onclick="toggleTimer()">START</button>
+                    <button class="btn-control btn-reset" onclick="resetTimer()">RESET</button>
+                </div>
+            </div>
+
+            <div class="widget" style="grid-column: 1 / -1;">
+                <div class="widget-title"><i class="ph ph-list-checks" style="font-size: 1.2rem; color: var(--gold);"></i> Missões do Dia</div>
+                
+                <div class="task-input-group">
+                    <input type="text" id="taskInput" class="input-task" placeholder="Nova missão...">
+                    <button class="btn-add" onclick="addTask()">+</button>
+                </div>
+
+                <ul class="task-list" id="taskList">
+                    </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // --- SEGURANÇA ---
+        if (localStorage.getItem('tmy_planner_unlocked') !== 'true') {
+            window.location.href = "index.html";
+        }
+        function logout() {
+            localStorage.removeItem('tmy_planner_unlocked');
+            window.location.href = "index.html";
+        }
+
+        // --- SAUDAÇÃO ---
+        const h = new Date().getHours();
+        document.getElementById('greeting').innerText = h < 12 ? 'Good Morning!' : (h < 18 ? 'Good Afternoon!' : 'Good Evening!');
+
+        // --- ESTADO GLOBAL (SALVAR TUDO) ---
+        let data = JSON.parse(localStorage.getItem('tmy_data')) || {
+            xp: 0,
+            week: [false, false, false, false, false, false, false],
+            tasks: []
+        };
+
+        function saveData() {
+            localStorage.setItem('tmy_data', JSON.stringify(data));
+            renderAll();
+        }
+
+        // --- LÓGICA DE XP ---
+        function renderXP() {
+            const level = Math.floor(data.xp / 100) + 1;
+            const progress = data.xp % 100;
+            document.getElementById('lvlNum').innerText = level;
+            document.getElementById('xpBar').style.width = progress + '%';
+            document.getElementById('xpText').innerText = progress + '/100 XP';
+        }
+
+        // --- LÓGICA DE SEMANA ---
+        function toggleDay(idx) {
+            data.week[idx] = !data.week[idx];
+            // Ganha/Perde 20XP
+            data.xp += data.week[idx] ? 20 : -20;
+            if(data.xp < 0) data.xp = 0;
+            saveData();
+        }
+
+        function renderWeek() {
+            const days = document.querySelectorAll('.day-box');
+            days.forEach((d, i) => {
+                if(data.week[i]) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+        }
+
+        // --- LÓGICA DE TAREFAS ---
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            if(!input.value.trim()) return;
+            data.tasks.push({ txt: input.value, done: false });
+            input.value = '';
+            saveData();
+        }
+
+        function toggleTask(idx) {
+            data.tasks[idx].done = !data.tasks[idx].done;
+            data.xp += data.tasks[idx].done ? 10 : -10;
+            if(data.xp < 0) data.xp = 0;
+            saveData();
+        }
+
+        function delTask(idx, e) {
+            e.stopPropagation(); // Não clica no toggle
+            if(data.tasks[idx].done) data.xp -= 10; // Perde xp se deletar feita
+            if(data.xp < 0) data.xp = 0;
+            data.tasks.splice(idx, 1);
+            saveData();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            data.tasks.forEach((t, i) => {
+                const li = document.createElement('li');
+                li.className = `task-item ${t.done ? 'done' : ''}`;
+                li.innerHTML = `
+                    <span style="flex:1; cursor:pointer;" onclick="toggleTask(${i})">${t.txt}</span>
+                    <i class="ph ph-trash trash-icon" style="cursor:pointer;" onclick="delTask(${i}, event)"></i>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // --- TIMER ---
+        let timerTime = 1500;
+        let timerInt = null;
+        const display = document.getElementById('timerDisplay');
+        const btnStart = document.querySelector('.btn-start');
+
+        function fmtTime(s) {
+            const m = Math.floor(s / 60).toString().padStart(2, '0');
+            const sec = (s % 60).toString().padStart(2, '0');
+            return `${m}:${sec}`;
+        }
+
+        function toggleTimer() {
+            if(timerInt) { // Pausar
+                clearInterval(timerInt);
+                timerInt = null;
+                btnStart.innerText = "RESUME";
+                btnStart.style.backgroundColor = "#E6007E";
+            } else { // Iniciar
+                btnStart.innerText = "PAUSE";
+                btnStart.style.backgroundColor = "#ff9800"; // Laranja
+                timerInt = setInterval(() => {
+                    if(timerTime > 0) {
+                        timerTime--;
+                        display.innerText = fmtTime(timerTime);
+                    } else {
+                        clearInterval(timerInt);
+                        timerInt = null;
+                        alert("Tempo esgotado! +50 XP");
+                        data.xp += 50; 
+                        saveData();
+                        timerTime = 1500;
+                        display.innerText = "25:00";
+                        btnStart.innerText = "START";
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInt);
+            timerInt = null;
+            timerTime = 1500;
+            display.innerText = "25:00";
+            btnStart.innerText = "START";
+            btnStart.style.backgroundColor = "#E6007E";
+        }
+
+        // ENTER na tarefa
+        document.getElementById('taskInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') addTask();
+        });
+
+        // INIT
+        function renderAll() {
+            renderXP();
+            renderWeek();
+            renderTasks();
+        }
+        renderAll();
+
+    </script>
+</body>
+</html>
