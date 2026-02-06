@@ -137,20 +137,17 @@
         document.getElementById('greeting').innerText = h < 12 ? 'Good Morning!' : (h < 18 ? 'Good Afternoon!' : 'Good Evening!');
 
         // --- ESTADO GLOBAL (DADOS) ---
-        // Agora 'tasks' é um objeto com arrays para cada dia (0 a 6)
         const defaultData = {
             xp: 0,
-            weekCheck: [false, false, false, false, false, false, false], // Para widget de frequência
-            tasks: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] }, // Tarefas por dia
-            pomoLog: [] // Log do timer
+            weekCheck: [false, false, false, false, false, false, false],
+            tasks: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] },
+            pomoLog: []
         };
 
         let data = JSON.parse(localStorage.getItem('tmy_v2_data')) || defaultData;
-
-        // Se o usuário tinha a versão antiga dos dados, reseta para evitar bug (ou migra se fosse prod)
         if (Array.isArray(data.tasks)) { data = defaultData; }
 
-        let currentDayIdx = new Date().getDay(); // Começa selecionando o dia de hoje
+        let currentDayIdx = new Date().getDay();
 
         function saveData() {
             localStorage.setItem('tmy_v2_data', JSON.stringify(data));
@@ -166,10 +163,9 @@
             document.getElementById('xpText').innerText = progress + '/100 XP';
         }
 
-        // --- 2. FREQUÊNCIA (CHECK-IN) ---
+        // --- 2. FREQUÊNCIA ---
         function toggleFrequency(dayIdx) {
             data.weekCheck[dayIdx] = !data.weekCheck[dayIdx];
-            // Ganha XP ao marcar, perde ao desmarcar
             data.xp += data.weekCheck[dayIdx] ? 20 : -20;
             if (data.xp < 0) data.xp = 0;
             saveData();
@@ -190,24 +186,19 @@
             });
         }
 
-        // --- 3. PLANEJAMENTO (CALENDÁRIO) ---
+        // --- 3. PLANEJAMENTO ---
         function selectDay(dayIdx) {
             currentDayIdx = dayIdx;
-
-            // Atualiza visual das abas
             document.querySelectorAll('.day-tab').forEach((tab, i) => {
                 if (i === dayIdx) tab.classList.add('active');
                 else tab.classList.remove('active');
             });
-
             renderTasks();
         }
 
         function addTask() {
             const input = document.getElementById('taskInput');
             if (!input.value.trim()) return;
-
-            // Adiciona tarefa no dia selecionado
             data.tasks[currentDayIdx].push({ txt: input.value, done: false });
             input.value = '';
             saveData();
@@ -216,20 +207,13 @@
         function toggleTask(taskIdx) {
             const task = data.tasks[currentDayIdx][taskIdx];
             task.done = !task.done;
-
-            // Ganha XP ao concluir, perde se desmarcar (anti-cheat simples)
             data.xp += task.done ? 10 : -10;
             if (data.xp < 0) data.xp = 0;
             saveData();
         }
 
         function deleteTask(taskIdx, e) {
-            e.stopPropagation(); // Evita marcar como feito ao clicar na lixeira
-            const task = data.tasks[currentDayIdx][taskIdx];
-
-            // SOLUÇÃO PEDIDA: Se apagar, NÃO perde XP. 
-            // O aluno mantém o XP que ganhou. É um voto de confiança.
-
+            e.stopPropagation();
             data.tasks[currentDayIdx].splice(taskIdx, 1);
             saveData();
         }
@@ -270,22 +254,21 @@
         function addToLog(msg) {
             const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             data.pomoLog.unshift({ time: timeNow, text: msg });
-            if (data.pomoLog.length > 20) data.pomoLog.pop(); // Mantém apenas os ultimos 20
+            if (data.pomoLog.length > 20) data.pomoLog.pop();
             saveData();
         }
 
         function toggleTimer() {
-            if (timerInt) { // PAUSAR
+            if (timerInt) {
                 clearInterval(timerInt);
                 timerInt = null;
                 btnStart.innerText = "RESUME";
                 btnStart.style.backgroundColor = "#E6007E";
                 addToLog("⏸️ Pausou em " + fmtTime(timerTime));
-            } else { // INICIAR
+            } else {
                 btnStart.innerText = "PAUSE";
                 btnStart.style.backgroundColor = "#ff9800";
                 addToLog("▶️ Iniciou/Retomou");
-
                 timerInt = setInterval(() => {
                     if (timerTime > 0) {
                         timerTime--;
@@ -332,13 +315,13 @@
             });
         }
 
-        // --- 5. BACKUP / RESTORE (A Mágica do Arquivo) ---
+        // --- 5. BACKUP ---
         function downloadBackup() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
             downloadAnchorNode.setAttribute("download", "TellMePlanner_Backup.json");
-            document.body.appendChild(downloadAnchorNode); // Firefox requires
+            document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
         }
@@ -346,17 +329,15 @@
         function loadBackup(input) {
             const file = input.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function (e) {
                 try {
                     const savedData = JSON.parse(e.target.result);
-                    // Validação simples para ver se é um arquivo do nosso planner
                     if (savedData.xp !== undefined && savedData.tasks) {
                         data = savedData;
-                        saveData(); // Salva no localStorage
+                        saveData();
                         alert("Backup carregado com sucesso!");
-                        location.reload(); // Recarrega a página para atualizar tudo
+                        location.reload();
                     } else {
                         alert("Arquivo inválido.");
                     }
@@ -367,20 +348,16 @@
             reader.readAsText(file);
         }
 
-        // ENTER para adicionar tarefa
         document.getElementById('taskInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') addTask();
         });
 
-        // INIT GERAL
         function renderAll() {
             renderXP();
             renderFrequency();
-            selectDay(currentDayIdx); // Renderiza tarefas do dia atual
+            selectDay(currentDayIdx);
             renderLog();
         }
-
-        // Inicializa o dia correto na abertura
         selectDay(currentDayIdx);
         renderAll();
 

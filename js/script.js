@@ -1,6 +1,4 @@
-// EFEITO VISUAL: Cursor e Estrelas
 document.addEventListener('DOMContentLoaded', () => {
-    // Só ativa o cursor customizado se for Desktop (mouse)
     if (window.matchMedia("(pointer: fine)").matches) {
         const cursor = document.createElement('div');
         cursor.classList.add('cursor-arrow');
@@ -15,14 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!isMoving) {
                 isMoving = true;
                 createStar(e.clientX, e.clientY);
-                setTimeout(() => { isMoving = false; }, 40); // Controla a densidade de estrelas
+                setTimeout(() => { isMoving = false; }, 40);
             }
         });
 
         function createStar(x, y) {
             const star = document.createElement('div');
             star.classList.add('star-trail');
-            // Aleatoriedade leve para a estrela não sair linha reta
             const offset = (Math.random() - 0.5) * 15;
             star.style.left = (x - 5 + offset) + 'px';
             star.style.top = (y - 5 + offset) + 'px';

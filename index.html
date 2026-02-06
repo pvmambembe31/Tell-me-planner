@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tell Me Planner - Login</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="login-wrapper">
         <div class="login-box">
-            <img src="assets/logo.jpg" alt="TMY Logo" style="width: 100px; border-radius: 50%; border: 3px solid var(--magenta); margin-bottom: 20px;">
-            
+            <img src="assets/logo.jpg" alt="TMY Logo"
+                style="width: 100px; border-radius: 50%; border: 3px solid var(--magenta); margin-bottom: 20px;">
+
             <h2 style="margin-bottom: 10px;">Área Exclusiva</h2>
-            <p style="color: var(--text-dim); margin-bottom: 30px; font-size: 0.9rem;">Insira seu código de aluno para desbloquear o planner.</p>
-            
+            <p style="color: var(--text-dim); margin-bottom: 30px; font-size: 0.9rem;">Insira seu código de aluno para
+                desbloquear o planner.</p>
+
             <input type="password" id="passInput" class="login-input" placeholder="Código de Acesso">
             <button onclick="fazerLogin()" class="btn-primary">Desbloquear</button>
             <p id="errorMsg" class="error-msg">⚠️ Código inválido.</p>
@@ -22,8 +26,6 @@
 
     <script src="js/script.js"></script>
     <script>
-        // LÓGICA DE LOGIN SIMPLES
-        // Verifica se já está logado
         if (localStorage.getItem('tmy_planner_unlocked') === 'true') {
             window.location.href = "app.html";
         }
@@ -31,7 +33,7 @@
         function fazerLogin() {
             const input = document.getElementById('passInput');
             const erro = document.getElementById('errorMsg');
-            const senhaCorreta = "tellmeyou"; // SENHA AQUI
+            const senhaCorreta = "tellmeyou";
 
             if (input.value.toLowerCase() === senhaCorreta) {
                 localStorage.setItem('tmy_planner_unlocked', 'true');
@@ -43,10 +45,10 @@
             }
         }
 
-        // Enter funciona para logar
         document.getElementById('passInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') fazerLogin();
+            if (e.key === 'Enter') fazerLogin();
         });
     </script>
 </body>
+
 </html>
