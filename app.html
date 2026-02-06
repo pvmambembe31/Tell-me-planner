@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
+
 <body>
-    
+
     <div class="app-container">
         <header class="app-header">
             <div class="user-welcome">
@@ -16,7 +18,7 @@
                     <img src="assets/logo.jpg" style="width: 50px; border-radius: 50%;">
                     <div>
                         <h1 id="greeting">Hello!</h1>
-                        <p style="color: var(--text-dim); font-size: 0.9rem;">Foco total hoje.</p>
+                        <p style="color: var(--text-dim); font-size: 0.9rem;">Organize sua rotina de estudos.</p>
                     </div>
                 </div>
             </div>
@@ -24,7 +26,9 @@
             <div style="display: flex; gap: 20px; align-items: center;">
                 <div class="xp-wrapper">
                     <div class="lvl-circle">LV<span id="lvlNum">1</span></div>
-                    <div class="xp-track"><div class="xp-fill" id="xpBar"></div></div>
+                    <div class="xp-track">
+                        <div class="xp-fill" id="xpBar"></div>
+                    </div>
                     <span style="font-size: 0.8rem; font-weight: bold; color: var(--gold);" id="xpText">0 XP</span>
                 </div>
                 <button onclick="logout()" class="logout-btn">Sair</button>
@@ -32,72 +36,128 @@
         </header>
 
         <div class="grid-dashboard">
-            
+
             <div class="widget">
-                <div class="widget-title"><i class="ph ph-calendar-check" style="font-size: 1.2rem; color: var(--magenta);"></i> Frequência</div>
+                <div class="widget-title">
+                    <span><i class="ph ph-calendar-check" style="color: var(--magenta);"></i> Check-in Diário</span>
+                    <button class="btn-small-action" onclick="resetWeek()"
+                        title="Limpa as marcações mas mantem o XP">Nova Semana ↻</button>
+                </div>
                 <div class="week-row">
-                    <div class="day-box" onclick="toggleDay(0)"><div class="check-circle"></div><span>D</span></div>
-                    <div class="day-box" onclick="toggleDay(1)"><div class="check-circle"></div><span>S</span></div>
-                    <div class="day-box" onclick="toggleDay(2)"><div class="check-circle"></div><span>T</span></div>
-                    <div class="day-box" onclick="toggleDay(3)"><div class="check-circle"></div><span>Q</span></div>
-                    <div class="day-box" onclick="toggleDay(4)"><div class="check-circle"></div><span>Q</span></div>
-                    <div class="day-box" onclick="toggleDay(5)"><div class="check-circle"></div><span>S</span></div>
-                    <div class="day-box" onclick="toggleDay(6)"><div class="check-circle"></div><span>S</span></div>
+                    <div class="day-box" onclick="toggleFrequency(0)">
+                        <div class="check-circle"></div><span>D</span>
+                    </div>
+                    <div class="day-box" onclick="toggleFrequency(1)">
+                        <div class="check-circle"></div><span>S</span>
+                    </div>
+                    <div class="day-box" onclick="toggleFrequency(2)">
+                        <div class="check-circle"></div><span>T</span>
+                    </div>
+                    <div class="day-box" onclick="toggleFrequency(3)">
+                        <div class="check-circle"></div><span>Q</span>
+                    </div>
+                    <div class="day-box" onclick="toggleFrequency(4)">
+                        <div class="check-circle"></div><span>Q</span>
+                    </div>
+                    <div class="day-box" onclick="toggleFrequency(5)">
+                        <div class="check-circle"></div><span>S</span>
+                    </div>
+                    <div class="day-box" onclick="toggleFrequency(6)">
+                        <div class="check-circle"></div><span>S</span>
+                    </div>
                 </div>
             </div>
 
             <div class="widget">
-                <div class="widget-title"><i class="ph ph-clock" style="font-size: 1.2rem; color: var(--blue);"></i> Pomodoro</div>
+                <div class="widget-title">
+                    <span><i class="ph ph-clock" style="color: var(--blue);"></i> Pomodoro Log</span>
+                    <button class="btn-small-action" onclick="clearTimerLog()">Limpar Log</button>
+                </div>
                 <div class="timer-big" id="timerDisplay">25:00</div>
                 <div class="timer-actions">
                     <button class="btn-control btn-start" onclick="toggleTimer()">START</button>
                     <button class="btn-control btn-reset" onclick="resetTimer()">RESET</button>
                 </div>
+                <div class="pomodoro-log" id="pomodoroLog">
+                    <div class="log-item">O histórico aparecerá aqui...</div>
+                </div>
             </div>
 
             <div class="widget" style="grid-column: 1 / -1;">
-                <div class="widget-title"><i class="ph ph-list-checks" style="font-size: 1.2rem; color: var(--gold);"></i> Missões do Dia</div>
-                
+                <div class="widget-title">
+                    <span><i class="ph ph-list-checks" style="color: var(--gold);"></i> Planejamento da Semana</span>
+                </div>
+
+                <div class="day-tabs">
+                    <button class="day-tab active" onclick="selectDay(0)">Domingo</button>
+                    <button class="day-tab" onclick="selectDay(1)">Segunda</button>
+                    <button class="day-tab" onclick="selectDay(2)">Terça</button>
+                    <button class="day-tab" onclick="selectDay(3)">Quarta</button>
+                    <button class="day-tab" onclick="selectDay(4)">Quinta</button>
+                    <button class="day-tab" onclick="selectDay(5)">Sexta</button>
+                    <button class="day-tab" onclick="selectDay(6)">Sábado</button>
+                </div>
+
                 <div class="task-input-group">
-                    <input type="text" id="taskInput" class="input-task" placeholder="Nova missão...">
+                    <input type="text" id="taskInput" class="input-task" placeholder="O que vamos estudar neste dia?">
                     <button class="btn-add" onclick="addTask()">+</button>
                 </div>
 
                 <ul class="task-list" id="taskList">
-                    </ul>
+                </ul>
             </div>
 
         </div>
+
+        <div class="backup-area">
+            <button class="btn-backup" onclick="downloadBackup()">
+                <i class="ph ph-download-simple"></i> Salvar Progresso (Backup)
+            </button>
+
+            <button class="btn-backup btn-restore" onclick="document.getElementById('fileInput').click()">
+                <i class="ph ph-upload-simple"></i> Carregar Backup
+            </button>
+            <input type="file" id="fileInput" style="display: none;" onchange="loadBackup(this)">
+        </div>
+        <p style="text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 10px;">
+            Salve seu arquivo .json caso troque de computador ou limpe o cache.
+        </p>
+
     </div>
 
     <script src="js/script.js"></script>
+
     <script>
-        // --- SEGURANÇA ---
-        if (localStorage.getItem('tmy_planner_unlocked') !== 'true') {
-            window.location.href = "index.html";
-        }
-        function logout() {
-            localStorage.removeItem('tmy_planner_unlocked');
-            window.location.href = "index.html";
-        }
+        // --- SEGURANÇA BÁSICA ---
+        if (localStorage.getItem('tmy_planner_unlocked') !== 'true') window.location.href = "index.html";
+        function logout() { localStorage.removeItem('tmy_planner_unlocked'); window.location.href = "index.html"; }
 
         // --- SAUDAÇÃO ---
         const h = new Date().getHours();
         document.getElementById('greeting').innerText = h < 12 ? 'Good Morning!' : (h < 18 ? 'Good Afternoon!' : 'Good Evening!');
 
-        // --- ESTADO GLOBAL (SALVAR TUDO) ---
-        let data = JSON.parse(localStorage.getItem('tmy_data')) || {
+        // --- ESTADO GLOBAL (DADOS) ---
+        // Agora 'tasks' é um objeto com arrays para cada dia (0 a 6)
+        const defaultData = {
             xp: 0,
-            week: [false, false, false, false, false, false, false],
-            tasks: []
+            weekCheck: [false, false, false, false, false, false, false], // Para widget de frequência
+            tasks: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] }, // Tarefas por dia
+            pomoLog: [] // Log do timer
         };
 
+        let data = JSON.parse(localStorage.getItem('tmy_v2_data')) || defaultData;
+
+        // Se o usuário tinha a versão antiga dos dados, reseta para evitar bug (ou migra se fosse prod)
+        if (Array.isArray(data.tasks)) { data = defaultData; }
+
+        let currentDayIdx = new Date().getDay(); // Começa selecionando o dia de hoje
+
         function saveData() {
-            localStorage.setItem('tmy_data', JSON.stringify(data));
+            localStorage.setItem('tmy_v2_data', JSON.stringify(data));
             renderAll();
         }
 
-        // --- LÓGICA DE XP ---
+        // --- 1. SISTEMA DE XP ---
         function renderXP() {
             const level = Math.floor(data.xp / 100) + 1;
             const progress = data.xp % 100;
@@ -106,62 +166,96 @@
             document.getElementById('xpText').innerText = progress + '/100 XP';
         }
 
-        // --- LÓGICA DE SEMANA ---
-        function toggleDay(idx) {
-            data.week[idx] = !data.week[idx];
-            // Ganha/Perde 20XP
-            data.xp += data.week[idx] ? 20 : -20;
-            if(data.xp < 0) data.xp = 0;
+        // --- 2. FREQUÊNCIA (CHECK-IN) ---
+        function toggleFrequency(dayIdx) {
+            data.weekCheck[dayIdx] = !data.weekCheck[dayIdx];
+            // Ganha XP ao marcar, perde ao desmarcar
+            data.xp += data.weekCheck[dayIdx] ? 20 : -20;
+            if (data.xp < 0) data.xp = 0;
             saveData();
         }
 
-        function renderWeek() {
-            const days = document.querySelectorAll('.day-box');
+        function resetWeek() {
+            if (confirm("Iniciar nova semana? Isso limpará os checks de frequência, mas manterá seu XP.")) {
+                data.weekCheck = [false, false, false, false, false, false, false];
+                saveData();
+            }
+        }
+
+        function renderFrequency() {
+            const days = document.querySelectorAll('.week-row .day-box');
             days.forEach((d, i) => {
-                if(data.week[i]) d.classList.add('active');
+                if (data.weekCheck[i]) d.classList.add('active');
                 else d.classList.remove('active');
             });
         }
 
-        // --- LÓGICA DE TAREFAS ---
+        // --- 3. PLANEJAMENTO (CALENDÁRIO) ---
+        function selectDay(dayIdx) {
+            currentDayIdx = dayIdx;
+
+            // Atualiza visual das abas
+            document.querySelectorAll('.day-tab').forEach((tab, i) => {
+                if (i === dayIdx) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+
+            renderTasks();
+        }
+
         function addTask() {
             const input = document.getElementById('taskInput');
-            if(!input.value.trim()) return;
-            data.tasks.push({ txt: input.value, done: false });
+            if (!input.value.trim()) return;
+
+            // Adiciona tarefa no dia selecionado
+            data.tasks[currentDayIdx].push({ txt: input.value, done: false });
             input.value = '';
             saveData();
         }
 
-        function toggleTask(idx) {
-            data.tasks[idx].done = !data.tasks[idx].done;
-            data.xp += data.tasks[idx].done ? 10 : -10;
-            if(data.xp < 0) data.xp = 0;
+        function toggleTask(taskIdx) {
+            const task = data.tasks[currentDayIdx][taskIdx];
+            task.done = !task.done;
+
+            // Ganha XP ao concluir, perde se desmarcar (anti-cheat simples)
+            data.xp += task.done ? 10 : -10;
+            if (data.xp < 0) data.xp = 0;
             saveData();
         }
 
-        function delTask(idx, e) {
-            e.stopPropagation(); // Não clica no toggle
-            if(data.tasks[idx].done) data.xp -= 10; // Perde xp se deletar feita
-            if(data.xp < 0) data.xp = 0;
-            data.tasks.splice(idx, 1);
+        function deleteTask(taskIdx, e) {
+            e.stopPropagation(); // Evita marcar como feito ao clicar na lixeira
+            const task = data.tasks[currentDayIdx][taskIdx];
+
+            // SOLUÇÃO PEDIDA: Se apagar, NÃO perde XP. 
+            // O aluno mantém o XP que ganhou. É um voto de confiança.
+
+            data.tasks[currentDayIdx].splice(taskIdx, 1);
             saveData();
         }
 
         function renderTasks() {
             const list = document.getElementById('taskList');
             list.innerHTML = '';
-            data.tasks.forEach((t, i) => {
+            const tasksOfDay = data.tasks[currentDayIdx] || [];
+
+            if (tasksOfDay.length === 0) {
+                list.innerHTML = '<li style="color: var(--text-dim); text-align:center; padding: 20px;">Nenhuma missão planejada para este dia.</li>';
+                return;
+            }
+
+            tasksOfDay.forEach((t, i) => {
                 const li = document.createElement('li');
                 li.className = `task-item ${t.done ? 'done' : ''}`;
                 li.innerHTML = `
                     <span style="flex:1; cursor:pointer;" onclick="toggleTask(${i})">${t.txt}</span>
-                    <i class="ph ph-trash trash-icon" style="cursor:pointer;" onclick="delTask(${i}, event)"></i>
+                    <i class="ph ph-trash trash-icon" style="cursor:pointer;" title="Apagar (XP mantido)" onclick="deleteTask(${i}, event)"></i>
                 `;
                 list.appendChild(li);
             });
         }
 
-        // --- TIMER ---
+        // --- 4. TIMER & LOG ---
         let timerTime = 1500;
         let timerInt = null;
         const display = document.getElementById('timerDisplay');
@@ -173,24 +267,35 @@
             return `${m}:${sec}`;
         }
 
+        function addToLog(msg) {
+            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            data.pomoLog.unshift({ time: timeNow, text: msg });
+            if (data.pomoLog.length > 20) data.pomoLog.pop(); // Mantém apenas os ultimos 20
+            saveData();
+        }
+
         function toggleTimer() {
-            if(timerInt) { // Pausar
+            if (timerInt) { // PAUSAR
                 clearInterval(timerInt);
                 timerInt = null;
                 btnStart.innerText = "RESUME";
                 btnStart.style.backgroundColor = "#E6007E";
-            } else { // Iniciar
+                addToLog("⏸️ Pausou em " + fmtTime(timerTime));
+            } else { // INICIAR
                 btnStart.innerText = "PAUSE";
-                btnStart.style.backgroundColor = "#ff9800"; // Laranja
+                btnStart.style.backgroundColor = "#ff9800";
+                addToLog("▶️ Iniciou/Retomou");
+
                 timerInt = setInterval(() => {
-                    if(timerTime > 0) {
+                    if (timerTime > 0) {
                         timerTime--;
                         display.innerText = fmtTime(timerTime);
                     } else {
                         clearInterval(timerInt);
                         timerInt = null;
-                        alert("Tempo esgotado! +50 XP");
-                        data.xp += 50; 
+                        alert("Sessão Finalizada! +50 XP");
+                        data.xp += 50;
+                        addToLog("✅ Sessão concluída (+50XP)");
                         saveData();
                         timerTime = 1500;
                         display.innerText = "25:00";
@@ -207,21 +312,79 @@
             display.innerText = "25:00";
             btnStart.innerText = "START";
             btnStart.style.backgroundColor = "#E6007E";
+            addToLog("🔄 Timer Resetado");
         }
 
-        // ENTER na tarefa
+        function clearTimerLog() {
+            data.pomoLog = [];
+            saveData();
+        }
+
+        function renderLog() {
+            const logDiv = document.getElementById('pomodoroLog');
+            logDiv.innerHTML = '';
+            if (data.pomoLog.length === 0) {
+                logDiv.innerHTML = '<div class="log-item">Histórico vazio.</div>';
+                return;
+            }
+            data.pomoLog.forEach(log => {
+                logDiv.innerHTML += `<div class="log-item"><span>${log.time}</span> - ${log.text}</div>`;
+            });
+        }
+
+        // --- 5. BACKUP / RESTORE (A Mágica do Arquivo) ---
+        function downloadBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "TellMePlanner_Backup.json");
+            document.body.appendChild(downloadAnchorNode); // Firefox requires
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function loadBackup(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const savedData = JSON.parse(e.target.result);
+                    // Validação simples para ver se é um arquivo do nosso planner
+                    if (savedData.xp !== undefined && savedData.tasks) {
+                        data = savedData;
+                        saveData(); // Salva no localStorage
+                        alert("Backup carregado com sucesso!");
+                        location.reload(); // Recarrega a página para atualizar tudo
+                    } else {
+                        alert("Arquivo inválido.");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler arquivo.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ENTER para adicionar tarefa
         document.getElementById('taskInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') addTask();
+            if (e.key === 'Enter') addTask();
         });
 
-        // INIT
+        // INIT GERAL
         function renderAll() {
             renderXP();
-            renderWeek();
-            renderTasks();
+            renderFrequency();
+            selectDay(currentDayIdx); // Renderiza tarefas do dia atual
+            renderLog();
         }
+
+        // Inicializa o dia correto na abertura
+        selectDay(currentDayIdx);
         renderAll();
 
     </script>
 </body>
+
 </html>

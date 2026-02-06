@@ -1,142 +1,117 @@
-/* --- FONTES E RESET --- */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Poppins:wght@700;900&display=swap');
+/* --- (MANTENHA O CÓDIGO ANTERIOR ATÉ A PARTE DO .widget-title) --- */
+/* ... (Todo o CSS base, login, cursor, etc continua igual) ... */
 
-:root {
-    --bg-main: #130f25;
-    --bg-secondary: #1f163d;
-    --magenta: #E6007E;
-    --magenta-glow: rgba(230, 0, 126, 0.4);
-    --blue: #0065BD;
-    --gold: #FFD700;
-    --text-light: #f0f0f5;
-    --text-dim: #aab0c7;
+/* ADICIONE/SUBSTITUA DAQUI PARA BAIXO NO CSS DO DASHBOARD */
+
+/* SELETOR DE DIAS DA SEMANA (ABAS) */
+.day-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-
-body {
-    background-color: var(--bg-main);
-    background-image: radial-gradient(circle at 50% -20%, #2a1a5e 0%, var(--bg-main) 70%);
-    color: var(--text-light);
-    font-family: 'Montserrat', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
+.day-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    white-space: nowrap;
 }
 
-/* --- CURSOR DOURADO --- */
-.cursor-arrow {
-    width: 24px; height: 24px; position: fixed; pointer-events: none; z-index: 9999;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23FFD700' d='M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z'/%3E%3C/svg%3E");
-    background-size: contain; transform: rotate(-30deg) translate(-5px, -5px);
-}
-.star-trail {
-    position: fixed; width: 10px; height: 10px; background: var(--gold);
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    pointer-events: none; z-index: 9998; animation: fadeStar 0.8s linear forwards;
-}
-@keyframes fadeStar {
-    0% { opacity: 1; transform: scale(1) rotate(0deg); }
-    100% { opacity: 0; transform: scale(0.2) rotate(180deg); }
+.day-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* --- TELA DE LOGIN (index.html) --- */
-.login-wrapper {
-    display: flex; justify-content: center; align-items: center; height: 100vh;
-    background: radial-gradient(circle, rgba(230,0,126,0.1) 0%, rgba(19,15,37,1) 70%);
+.day-tab.active {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+    box-shadow: 0 5px 15px rgba(0, 101, 189, 0.4);
 }
-.login-box {
-    background: rgba(31, 22, 61, 0.7); backdrop-filter: blur(20px);
-    padding: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
-    text-align: center; width: 90%; max-width: 400px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    animation: float 6s ease-in-out infinite;
+
+/* LOG DO POMODORO */
+.pomodoro-log {
+    margin-top: 20px;
+    max-height: 100px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 10px;
 }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-.login-input {
-    width: 100%; background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1);
-    padding: 15px; border-radius: 12px; color: white; font-size: 1.1rem;
-    text-align: center; margin: 25px 0; outline: none; transition: 0.3s;
+.log-item {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 2px;
 }
-.login-input:focus { border-color: var(--magenta); box-shadow: 0 0 15px var(--magenta-glow); }
 
-.btn-primary {
-    background: linear-gradient(90deg, var(--magenta), var(--blue));
-    color: white; border: none; padding: 15px 30px; border-radius: 50px;
-    font-weight: bold; font-size: 1rem; width: 100%; transition: 0.3s;
+.log-item span {
+    color: var(--magenta);
+    font-weight: bold;
 }
-.btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--magenta-glow); }
-.error-msg { color: #ff4444; margin-top: 15px; display: none; font-size: 0.9rem; }
 
-/* --- PLANNER APP (app.html) --- */
-.app-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-
-/* Header do App */
-.app-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
-    flex-wrap: wrap; gap: 20px;
+/* ÁREA DE BACKUP (FOOTER) */
+.backup-area {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
-.user-welcome h1 { font-family: 'Poppins', sans-serif; font-size: 2rem; }
-.logout-btn { background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; transition: 0.3s; }
-.logout-btn:hover { border-color: #ff4444; color: #ff4444; }
 
-/* Barra de XP */
-.xp-wrapper {
-    background: rgba(0,0,0,0.3); padding: 8px 20px 8px 8px; border-radius: 50px;
-    display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); min-width: 300px;
+.btn-backup {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
 }
-.lvl-circle {
-    background: var(--gold); color: var(--bg-main); font-weight: 900;
-    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+
+.btn-backup:hover {
+    background: var(--gold);
+    color: var(--bg-main);
 }
-.xp-track { flex-grow: 1; height: 8px; background: rgba(255,255,255,0.1); margin: 0 15px; border-radius: 10px; overflow: hidden; }
-.xp-fill { height: 100%; background: linear-gradient(90deg, var(--magenta), var(--gold)); width: 0%; transition: width 0.5s; }
 
-/* Grid de Widgets */
-.grid-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-.widget {
-    background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    display: flex; flex-direction: column;
+.btn-restore {
+    border-color: var(--text-dim);
+    color: var(--text-dim);
 }
-.widget-title { margin-bottom: 20px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;}
 
-/* Semana */
-.week-row { display: flex; justify-content: space-between; }
-.day-box { display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.5; transition: 0.3s; }
-.day-box:hover { opacity: 1; }
-.day-box.active { opacity: 1; }
-.check-circle {
-    width: 35px; height: 35px; border: 2px solid var(--text-light); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; transition: 0.3s;
+.btn-restore:hover {
+    background: var(--text-dim);
+    color: var(--bg-main);
 }
-.day-box.active .check-circle { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 15px rgba(0, 101, 189, 0.5); }
-.day-box.active .check-circle::after { content: '✔'; font-size: 0.9rem; }
 
-/* Timer */
-.timer-big { font-size: 4.5rem; font-weight: 900; text-align: center; font-variant-numeric: tabular-nums; text-shadow: 0 0 30px rgba(255,255,255,0.1); margin: 10px 0; }
-.timer-actions { display: flex; gap: 10px; justify-content: center; }
-.btn-control { padding: 10px 20px; border-radius: 12px; border: none; font-weight: bold; }
-.btn-start { background: var(--magenta); color: white; width: 100px;}
-.btn-reset { background: rgba(255,255,255,0.1); color: white; }
-
-/* Tarefas */
-.task-input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-.input-task { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; color: white; outline: none; }
-.btn-add { background: var(--blue); color: white; border: none; width: 45px; border-radius: 12px; font-size: 1.5rem; }
-.task-list { list-style: none; max-height: 300px; overflow-y: auto; }
-.task-item {
-    background: rgba(255,255,255,0.03); margin-bottom: 10px; padding: 15px; border-radius: 12px;
-    display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
-    border-left: 3px solid transparent;
+/* Pequeno ajuste no botão de Resetar Semana */
+.btn-small-action {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-dim);
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
 }
-.task-item.done { opacity: 0.4; text-decoration: line-through; border-left-color: var(--gold); }
-.trash-icon { color: #ff4444; opacity: 0; transition: 0.2s; }
-.task-item:hover .trash-icon { opacity: 1; }
 
-/* Mobile */
-@media (max-width: 768px) {
-    .app-header { flex-direction: column; align-items: flex-start; }
-    .xp-wrapper { width: 100%; }
-    .timer-big { font-size: 3.5rem; }
+.btn-small-action:hover {
+    background: #ff4444;
+    color: white;
 }
